@@ -38,15 +38,16 @@ We have successfully integrated the backend search engine with the frontend UI.
 ## 📋 Project Structure
 
 ```text
-DPDP/
+Auto-compliancer/
 ├── data/
 │   ├── raw/                # Official DPDP Act PDF
 │   └── processed/          # Hierarchical JSON (Brain of the system)
 ├── backend/
 │   ├── app.py              # Flask Backend with RAG logic
+│   ├── main.py             # FastAPI entry point
 │   ├── rag.py              # ChromaDB retrieval logic
 │   └── vector_store/       # Local vector database
-├── Auto-Compliance Mapper/
+├── frontend/
 │   ├── src/
 │   │   ├── components/     # Upload, Dashboard, Results, Dpdp UI
 │   │   ├── data/           # dpdpData predefined findings
@@ -75,7 +76,7 @@ python app.py or python -m uvicorn main:app --reload
 
 ### 2. Start the Frontend
 ```bash
-cd "Auto-Compliance Mapper"
+cd frontend
 npm install
 npm run dev
 ```
