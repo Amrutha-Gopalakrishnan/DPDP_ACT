@@ -1,100 +1,86 @@
-# Auto-Compliance Mapper: DPDP Act 2023 Prototype
+# Auto-Compliance Mapper: DPDP Act 2023 MVP
 
 ## Project Overview
-The **Auto-Compliance Mapper** is a specialized GRC (Governance, Risk, and Compliance) tool designed to map technical findings and organizational documentation directly to the **Digital Personal Data Protection (DPDP) Act, 2023**. 
+The **Auto-Compliance Mapper** is a specialized GRC (Governance, Risk, and Compliance) tool designed to map technical security findings and organizational documentation directly to the **Digital Personal Data Protection (DPDP) Act, 2023**.
 
-The core objective is to provide an offline, AI-powered search engine that identifies specific legal violations based on technical issues (e.g., "Lack of encryption") or documentation gaps, helping organizations maintain compliance with Indian data protection laws.
-
----
-
-## 🚀 Current Status (Phase 1: Foundation & Data Structuring)
-
-We have successfully completed the high-fidelity data extraction and the library interface.
-
-### ✅ Completed Milestones:
-1.  **High-Precision PDF Extraction**: 
-    - Converted the official DPDP Act 2023 PDF into clean, normalized text.
-    - Automated removal of Gazette noise (headers, footers, Hindi text, ministry details).
-2.  **Hierarchical Parsing (The "Brain")**: 
-    - Developed a custom Python parser (`split_into_sections.py`) that understands the complex structure of legal documents.
-    - **Outcome**: A granular `sections.json` file capturing:
-        - Chapters & Section Titles
-        - Subsections, Clauses, and Sub-clauses (up to 5 levels of nesting).
-        - Illustrations, Provisos, and Explanations.
-3.  **DPDP Act Library (Frontend)**:
-    - Built a React-based interactive library viewer.
-    - **Features**:
-        - Real-time search across the entire Act.
-        - Hierarchical data rendering (nested legal text).
-        - Detailed modal views for focused legal research.
+The MVP provides an offline, AI-powered semantic search engine that identifies specific legal sections and clauses based on technical observations (e.g., "Lack of encryption", "No consent withdrawal"), helping organizations bridge the gap between technical reality and legal requirements.
 
 ---
 
-## 🛠 Project Structure
+## 🚀 MVP Features (Current Status)
+
+We have successfully integrated the backend search engine with the frontend UI.
+
+### ✅ Completed Components:
+1.  **AI Mapping Engine (Backend)**: 
+    - **Local RAG Implementation**: Uses ChromaDB and Sentence-Transformers to perform semantic search across the DPDP Act.
+    - **API Layer**: FastAPI/Flask endpoints (`/analyze`) that take technical findings and return relevant legal sections with rationale.
+2.  **Compliance Dashboard (Frontend)**:
+    - **Interactive Checklist**: Predefined common technical findings associated with DPDP violations.
+    - **PDF Context Analysis**: Extracts text from technical audit PDFs using PDF.js to provide context for mapping.
+    - **Results Viewer**: Displays mapped sections, risk levels (High/Medium), and technical impact summaries.
+3.  **DPDP Act Library**:
+    - **Live Search**: Real-time hierarchical search across all Chapters and Sections.
+    - **Granular Data**: Structured JSON capturing subsections, clauses, illustrations, and provisos.
+4.  **Reporting**:
+    - **PDF Generation**: Export compliance mapping results into a professional PDF report.
+
+---
+
+## 🛠 Tech Stack
+
+- **Frontend**: React (Vite), Vanilla CSS, PDF.js, jsPDF.
+- **Backend**: Python (FastAPI/Flask), ChromaDB, Sentence-Transformers (`all-MiniLM-L6-v2`).
+- **Data Pipeline**: Python scripts for PDF hierarchical parsing.
+
+---
+
+## 📋 Project Structure
 
 ```text
 DPDP/
 ├── data/
-│   ├── raw/                # Original PDF (Source of truth)
-│   └── processed/          # Structured data (sections.json)
-├── scripts/
-│   ├── extract_raw_txt.py  # PDF to Text cleaning engine
-│   └── split_into_sections.py # Hierarchical JSON generator
+│   ├── raw/                # Official DPDP Act PDF
+│   └── processed/          # Hierarchical JSON (Brain of the system)
+├── backend/
+│   ├── app.py              # Flask Backend with RAG logic
+│   ├── rag.py              # ChromaDB retrieval logic
+│   └── vector_store/       # Local vector database
 ├── Auto-Compliance Mapper/
-│   └── Auto-Compliance Mapper/
-│       ├── src/
-│       │   ├── data/       # Application data (Copy of sections.json)
-│       │   ├── components/ # Library UI & Dashboard components
-│       │   └── utils/      # Compliance logic placeholder
-│       └── package.json    # React dependencies
-└── README.md               # You are here
+│   ├── src/
+│   │   ├── components/     # Upload, Dashboard, Results, Dpdp UI
+│   │   ├── data/           # dpdpData predefined findings
+│   │   └── utils/          # Transformation & Mapping logic
+│   └── package.json        # Frontend dependencies
+├── scripts/                # Data extraction & parsing scripts
+└── README.md               # Main Documentation
 ```
 
 ---
 
-## 🚧 Upcoming Work (Phase 2: The Compliance Search Engine)
+## ⚙️ How to Run
 
-To move from a "Library" to a "Compliance Search Engine", the following components must be integrated:
-
-### 1. Local RAG (Retrieval-Augmented Generation) Implementation
-- **Goal**: Allow natural language search and mapping without sending data to the cloud.
-- **Tech Stack**: LangChain, ChromaDB (Vector Store), and Sentence-Transformers (Embeddings).
-- **Task**: Chunk the `sections.json` into semantic pieces and store them in a local vector database.
-
-### 2. Technical Findings Mapping Engine
-- **Goal**: Automatically map a technical finding (e.g., "Password policies are weak") to the corresponding DPDP section.
-- **Task**: Build a Python backend that takes external findings, queries the vector store, and uses a **Local LLM** (via Ollama or LlamaCpp) to explain the violation.
-
-### 3. Document Processing (MS Office/Files)
-- **Goal**: Upload internal documents (Policies, SOPs) and analyze them against the Act.
-- **Tech Stack**: `python-docx` for MS Office files.
-
-### 4. Transition from Dummy Data
-- **Task**: Replace the existing frontend mockups in the "Upload" and "Results" pages with the real backend API responses generated by the Local Engine.
-
----
-
-## 📋 Constraints & Compliance
-- **Local-First**: The tool must run entirely offline to protect sensitive technical findings.
-- **Open Source**: Built using LangChain, React, and Open-Source LLMs (like Llama 3 or Mistral).
-- **Accuracy**: Legal mapping must cite the exact Section/Article from the structured JSON.
-
----
-
-## ⚙️ How to Run (Development)
-
-### Data Processing Scripts
+### 1. Start the Backend
 ```bash
-# Extract and clean text from PDF
-python scripts/extract_raw_txt.py
-
-# Convert text to hierarchical JSON
-python scripts/split_into_sections.py
+cd backend
+# Create and activate virtual environment
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+# Install dependencies
+pip install -r ../requirements.txt
+# Run the API
+python app.py 
 ```
 
-### Frontend UI
+### 2. Start the Frontend
 ```bash
-cd "Auto-Compliance Mapper/Auto-Compliance Mapper"
+cd "Auto-Compliance Mapper"
 npm install
 npm run dev
 ```
+
+---
+
+## 🔒 Security & Privacy
+- **100% Offline**: All processing occurs locally. No data is sent to external APIs or cloud services.
+- **Local Vectors**: The embeddings and vector database stay on the user's machine.
