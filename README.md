@@ -69,7 +69,8 @@ python -m venv venv
 # Install dependencies
 pip install -r ../requirements.txt
 # Run the API
-python app.py 
+python app.py or python -m uvicorn main:app --reload
+
 ```
 
 ### 2. Start the Frontend
